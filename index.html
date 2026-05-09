@@ -76,6 +76,9 @@
             const [removeDonationWidth, setRemoveDonationWidth] = useState(false);
             const [alignDonationLeft, setAlignDonationLeft] = useState(false);
             
+            // 체크박스 클릭 시 다음 채팅을 도네이션으로 강제하기 위한 Ref
+            const forceNextDonation = useRef(false);
+
             const FIXED_CONFIG = {
                 right: -3,
                 top: 16.5,
@@ -117,7 +120,14 @@
                 let timeoutId;
                 const addNextMessage = () => {
                     setPreviewChats(prev => {
-                        const isDonation = Math.random() < 0.15 && prev[prev.length - 1]?.type !== 'donation';
+                        // forceNextDonation이 true이거나 15% 확률인 경우 도네이션 생성
+                        const isDonation = forceNextDonation.current || (Math.random() < 0.15 && prev[prev.length - 1]?.type !== 'donation');
+                        
+                        // 도네이션이 한 번 생성되면 강제 플래그 해제
+                        if (forceNextDonation.current) {
+                            forceNextDonation.current = false;
+                        }
+
                         const randomAmount = ['1,000', '5,000', '10,000', '50,000'][Math.floor(Math.random() * 4)];
 
                         const nextChats = [
@@ -309,13 +319,21 @@
                                         {/* Settings Section */}
                                         <div className="space-y-3 pt-6 border-t border-neutral-100">
                                             <h3 className="text-sm font-bold text-neutral-800 flex items-center gap-2 mb-2">⚙️ 도네이션 박스 설정</h3>
-                                            <div className="flex items-center gap-3 p-3 bg-neutral-50 rounded-lg border border-neutral-100 hover:bg-neutral-100 transition-colors cursor-pointer group" onClick={() => setRemoveDonationWidth(!removeDonationWidth)}>
+                                            <div className="flex items-center gap-3 p-3 bg-neutral-50 rounded-lg border border-neutral-100 hover:bg-neutral-100 transition-colors cursor-pointer group" 
+                                                onClick={() => {
+                                                    setRemoveDonationWidth(!removeDonationWidth);
+                                                    forceNextDonation.current = true;
+                                                }}>
                                                 <div className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${removeDonationWidth ? 'bg-indigo-500 border-indigo-500' : 'bg-white border-neutral-300'}`}>
                                                     {removeDonationWidth && <span className="text-white text-[10px]">✔</span>}
                                                 </div>
                                                 <span className="text-sm text-neutral-700 font-medium">너비 제한 제거 (100% 확장)</span>
                                             </div>
-                                            <div className="flex items-center gap-3 p-3 bg-neutral-50 rounded-lg border border-neutral-100 hover:bg-neutral-100 transition-colors cursor-pointer group" onClick={() => setAlignDonationLeft(!alignDonationLeft)}>
+                                            <div className="flex items-center gap-3 p-3 bg-neutral-50 rounded-lg border border-neutral-100 hover:bg-neutral-100 transition-colors cursor-pointer group" 
+                                                onClick={() => {
+                                                    setAlignDonationLeft(!alignDonationLeft);
+                                                    forceNextDonation.current = true;
+                                                }}>
                                                 <div className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${alignDonationLeft ? 'bg-indigo-500 border-indigo-500' : 'bg-white border-neutral-300'}`}>
                                                     {alignDonationLeft && <span className="text-white text-[10px]">✔</span>}
                                                 </div>
