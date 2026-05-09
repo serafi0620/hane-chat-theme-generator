@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>채팅 테마 커스텀 도구</title>
+    
+    <!-- CDNs: React, Babel, Tailwind, Lucide -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* Custom Styles & Scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+        .code-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .code-scrollbar::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        .code-scrollbar::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 10px;
+        }
+        
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        body {
+            font-family: 'Pretendard', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-neutral-50 text-neutral-800">
+
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        const CHAT_DATA = [
+            "밥 먹었죠", "교촌", "짜장면", "곰탕", "아직 안먹었어요", "저거 아니에요?",
+            "에바돈", "에반데?", "앗 생활감", "오?", "오?", "오....", "오", "오....", "오..",
+            "<<<<<<<<","<<<<<<<<","<<<<<<<<","<<<<<<<<","<<<<<<<<","<<<<<<<<","<<<<<<<<","<<<<<<<<","<<<<<<<<",
+            "ㅋㅋㅋㅋㅋㅋㅋㅋㅋ", "ㅋㅋㅋㅋ", "ㅋㅋㅋㅋㅋ", "ㅋㅋㅋㅋㅋㅋㅋㅋ",
+            "ㅋㅋㅋㅋㅋㅋㅋ", "ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ", "?", "?", "???", "?", "??", "?", "?", "??",
+            "바이하네", "바이하네", "바하보네", "바이하네", "바이하네", "바하보네"
+        ];
+
+        function App() {
+            // 스타일 상태 관리
+            const [bubbleBgColor, setBubbleBgColor] = useState('#F0F9FF');
+            const [bubbleLineColor, setBubbleLineColor] = useState('#BAE6FD');
+            const [bubbleTxtColor, setBubbleTxtColor] = useState('#03273A');
+            const [stapleColor, setStapleColor] = useState('#025B88');
+            const [stapleWidth, setStapleWidth] = useState(14);
+            const [stapleHeight, setStapleHeight] = useState(6);
+            
+            const [removeDonationWidth, setRemoveDonationWidth] = useState(false);
+            const [alignDonationLeft, setAlignDonationLeft] = useState(false);
+            
+            const FIXED_CONFIG = {
+                right: -3,
+                top: 16.5,
+                width: 50,
+                height: 68,
+                scale: 0.45
+            };
+            
+            const [copied, setCopied] = useState(false);
+            const codeRef = useRef(null);
+            const backgroundImageUrl = "https://lh3.googleusercontent.com/d/1C73LrR_cGFt-zlU3UoWLJbUDyvxop6Fj";
+
+            const applyPreset = (type) => {
+                if (type === 'default') {
+                    setBubbleBgColor('#f3e6d5');
+                    setBubbleLineColor('#C9B09E');
+                    setBubbleTxtColor('#7B6151');
+                    setStapleColor('#7B6151');
+                    setStapleWidth(14);
+                    setStapleHeight(6);
+                } else if (type === 'newOutfit') {
+                    setBubbleBgColor('#F0F9FF');
+                    setBubbleLineColor('#BAE6FD');
+                    setBubbleTxtColor('#03273A');
+                    setStapleColor('#025B88');
+                    setStapleWidth(14);
+                    setStapleHeight(6);
+                }
+            };
+
+            const [previewChats, setPreviewChats] = useState([
+                { id: 0, text: CHAT_DATA[0], type: 'chat' },
+                { id: 1, text: CHAT_DATA[1], type: 'chat' }
+            ]);
+            const messageIndexRef = useRef(2);
+            const idCounterRef = useRef(2);
+
+            useEffect(() => {
+                let timeoutId;
+                const addNextMessage = () => {
+                    setPreviewChats(prev => {
+                        const isDonation = Math.random() < 0.15 && prev[prev.length - 1]?.type !== 'donation';
+                        const randomAmount = ['1,000', '5,000', '10,000', '50,000'][Math.floor(Math.random() * 4)];
+
+                        const nextChats = [
+                            ...prev, 
+                            { 
+                                id: idCounterRef.current++, 
+                                text: CHAT_DATA[messageIndexRef.current],
+                                type: isDonation ? 'donation' : 'chat',
+                                amount: randomAmount
+                            }
+                        ];
+                        return nextChats.slice(-12);
+                    });
+                    
+                    messageIndexRef.current = (messageIndexRef.current + 1) % CHAT_DATA.length;
+                    const randomDelay = 200 + Math.random() * 600;
+                    timeoutId = setTimeout(addNextMessage, randomDelay);
+                };
+
+                timeoutId = setTimeout(addNextMessage, 500);
+                return () => clearTimeout(timeoutId);
+            }, []);
+
+            const generatedCSS = `/* Import */
+@font-face {
+    font-family: 'Cafe24Dongdong';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_twelve@1.1/Cafe24Dongdong.woff') format('woff');
+    font-weight: normal;
+    font-display: swap;
+}
+@import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400&display=swap');
+
+/* 컬러 팔레트 */
+:root {
+    --bubble-bg-color: ${bubbleBgColor};
+    --bubble-line-color: ${bubbleLineColor};
+    --bubble-txt-color: ${bubbleTxtColor};
+    --main-font: 'Cafe24Dongdong', 'M PLUS Rounded 1c', sans-serif;
+    --staple-color: ${stapleColor};
+    --staple-width: ${stapleWidth}px;
+    --staple-height: ${stapleHeight}px;
+}
+
+/* 채팅 테마 */
+.chat_list div.chat {
+    position: relative;
+    margin: 20px 0px 20px 10px !important; 
+    padding: 10px 20px 10px 20px !important;
+    background-color: var(--bubble-bg-color);
+    max-width: 90%;
+    word-wrap: break-word;
+    width: max-content; 
+    border-radius: 10px; 
+    border: 2px solid var(--bubble-line-color);
+    box-shadow: 0 0 0 3px var(--bubble-bg-color), 2px 4px 5px rgba(0, 0, 0, 0.08) !important;
+}
+
+.chat_list .text {
+    color: var(--bubble-txt-color) !important;
+    text-shadow: none !important;
+    font-family: var(--main-font); 
+    letter-spacing: 0.5px;
+}
+
+/* 장식 세팅 */
+.chat_list .chat_box.chat::before,
+.chat_list .chat_box.chat::after {
+    content: '';
+    position: absolute;
+    left: -8px; 
+    width: var(--staple-width); 
+    height: var(--staple-height); 
+    background-color: var(--staple-color);
+    border-radius: 1px;
+    z-index: 2;
+}
+
+.chat_list .chat_box.chat::before {
+    top: calc(50% - var(--staple-height) - var(--staple-height) / 2);
+}
+.chat_list .chat_box.chat::after {
+    top: calc(50% + var(--staple-height) - var(--staple-height) / 2);
+}
+
+.chat_list .chat_box:not(.chat) {
+    ${removeDonationWidth ? '' : 'max-width: 100% !important;\n    width: 95% !important;'}
+    margin: 20px !important;
+    justify-self: ${alignDonationLeft ? 'left' : 'center'} !important;
+}
+
+.chat_list .chat_box:not(.chat) .donation_box {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 250px !important;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+}`;
+
+            const copyToClipboard = () => {
+                const textArea = document.createElement('textarea');
+                textArea.value = generatedCSS;
+                document.body.appendChild(textArea);
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    setCopied(true);
+                    setTimeout(() => setCopied(false), 2000);
+                } catch (err) {
+                    console.error('Copy failed', err);
+                }
+                document.body.removeChild(textArea);
+            };
+
+            return (
+                <div className="p-4 md:p-8 max-w-6xl mx-auto space-y-8">
+                    <style dangerouslySetInnerHTML={{ __html: `
+                        ${generatedCSS}
+                        .chat-preview-item { animation: fadeInUp 0.3s ease-out forwards; }
+                    `}} />
+
+                    {/* Header */}
+                    <div className="text-center space-y-2">
+                        <h1 className="text-3xl md:text-4xl font-bold text-neutral-900 tracking-tight flex items-center justify-center gap-3">
+                            <span className="text-amber-400">✨</span> 채팅 테마 커스텀 도구
+                        </h1>
+                        <p className="text-neutral-500">나만의 독특한 채팅 스타일을 디자인하고 실시간으로 확인해보세요.</p>
+                    </div>
+
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                        {/* Left Panel */}
+                        <div className="lg:col-span-4 space-y-4">
+                            <div className="bg-white rounded-2xl shadow-sm border border-neutral-200 overflow-y-auto max-h-[75vh] custom-scrollbar relative">
+                                <div className="sticky top-0 bg-white z-20 px-6 py-5 border-b flex items-center justify-between rounded-t-2xl shadow-sm">
+                                    <h2 className="text-lg font-bold flex items-center gap-2 text-neutral-800">
+                                        🎨 테마 디자인 커스텀
+                                    </h2>
+                                    <span className="text-[10px] bg-indigo-50 text-indigo-600 px-2.5 py-1 rounded-full font-bold uppercase tracking-wider">Editor</span>
+                                </div>
+
+                                <div className="p-6 space-y-6">
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-medium text-neutral-600">✨ 추천 테마 프리셋</label>
+                                        <div className="grid grid-cols-2 gap-2">
+                                            <button onClick={() => applyPreset('default')} className="px-3 py-2 bg-[#f3e6d5] border-2 border-[#C9B09E] text-[#7B6151] rounded-lg text-sm font-bold shadow-sm hover:brightness-95 transition-all">하네 기본</button>
+                                            <button onClick={() => applyPreset('newOutfit')} className="px-3 py-2 bg-[#F0F9FF] border-2 border-[#BAE6FD] text-[#03273A] rounded-lg text-sm font-bold shadow-sm hover:brightness-95 transition-all">하네 신의상</button>
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-4 pt-4 border-t border-neutral-50">
+                                        <div className="space-y-1">
+                                            <label className="text-sm font-medium text-neutral-600">배경 색상</label>
+                                            <div className="flex gap-3">
+                                                <input type="color" value={bubbleBgColor} onChange={(e) => setBubbleBgColor(e.target.value)} className="h-10 w-16 cursor-pointer rounded border border-neutral-300 p-1 bg-white" />
+                                                <input type="text" value={bubbleBgColor} onChange={(e) => setBubbleBgColor(e.target.value)} className="flex-1 h-10 border border-neutral-300 rounded px-3 text-sm outline-none uppercase font-mono focus:border-indigo-500 transition-colors" />
+                                            </div>
+                                        </div>
+                                        <div className="space-y-1">
+                                            <label className="text-sm font-medium text-neutral-600">테두리 색상</label>
+                                            <div className="flex gap-3">
+                                                <input type="color" value={bubbleLineColor} onChange={(e) => setBubbleLineColor(e.target.value)} className="h-10 w-16 cursor-pointer rounded border border-neutral-300 p-1 bg-white" />
+                                                <input type="text" value={bubbleLineColor} onChange={(e) => setBubbleLineColor(e.target.value)} className="flex-1 h-10 border border-neutral-300 rounded px-3 text-sm outline-none uppercase font-mono focus:border-indigo-500 transition-colors" />
+                                            </div>
+                                        </div>
+                                        <div className="space-y-1">
+                                            <label className="text-sm font-medium text-neutral-600">텍스트 색상</label>
+                                            <div className="flex gap-3">
+                                                <input type="color" value={bubbleTxtColor} onChange={(e) => setBubbleTxtColor(e.target.value)} className="h-10 w-16 cursor-pointer rounded border border-neutral-300 p-1 bg-white" />
+                                                <input type="text" value={bubbleTxtColor} onChange={(e) => setBubbleTxtColor(e.target.value)} className="flex-1 h-10 border border-neutral-300 rounded px-3 text-sm outline-none uppercase font-mono focus:border-indigo-500 transition-colors" />
+                                            </div>
+                                        </div>
+                                        <div className="space-y-1 pt-2 border-t border-neutral-100">
+                                            <label className="text-sm font-medium text-neutral-600">스테이플 장식 색상</label>
+                                            <div className="flex gap-3">
+                                                <input type="color" value={stapleColor} onChange={(e) => setStapleColor(e.target.value)} className="h-10 w-16 cursor-pointer rounded border border-neutral-300 p-1 bg-white" />
+                                                <input type="text" value={stapleColor} onChange={(e) => setStapleColor(e.target.value)} className="flex-1 h-10 border border-neutral-300 rounded px-3 text-sm outline-none uppercase font-mono focus:border-indigo-500 transition-colors" />
+                                            </div>
+                                        </div>
+                                        <div className="space-y-3 pt-2">
+                                            <div className="space-y-1">
+                                                <label className="text-sm font-medium text-neutral-600">장식 너비 ({stapleWidth}px)</label>
+                                                <input type="range" min="4" max="30" value={stapleWidth} onChange={(e) => setStapleWidth(e.target.value)} className="w-full accent-indigo-500 cursor-pointer" />
+                                            </div>
+                                            <div className="space-y-1">
+                                                <label className="text-sm font-medium text-neutral-600">장식 높이 ({stapleHeight}px)</label>
+                                                <input type="range" min="2" max="20" value={stapleHeight} onChange={(e) => setStapleHeight(Number(e.target.value))} className="w-full accent-indigo-500 cursor-pointer" />
+                                            </div>
+                                        </div>
+
+                                        {/* Settings Section */}
+                                        <div className="space-y-3 pt-6 border-t border-neutral-100">
+                                            <h3 className="text-sm font-bold text-neutral-800 flex items-center gap-2 mb-2">⚙️ 도네이션 박스 설정</h3>
+                                            <div className="flex items-center gap-3 p-3 bg-neutral-50 rounded-lg border border-neutral-100 hover:bg-neutral-100 transition-colors cursor-pointer group" onClick={() => setRemoveDonationWidth(!removeDonationWidth)}>
+                                                <div className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${removeDonationWidth ? 'bg-indigo-500 border-indigo-500' : 'bg-white border-neutral-300'}`}>
+                                                    {removeDonationWidth && <span className="text-white text-[10px]">✔</span>}
+                                                </div>
+                                                <span className="text-sm text-neutral-700 font-medium">너비 제한 제거 (100% 확장)</span>
+                                            </div>
+                                            <div className="flex items-center gap-3 p-3 bg-neutral-50 rounded-lg border border-neutral-100 hover:bg-neutral-100 transition-colors cursor-pointer group" onClick={() => setAlignDonationLeft(!alignDonationLeft)}>
+                                                <div className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${alignDonationLeft ? 'bg-indigo-500 border-indigo-500' : 'bg-white border-neutral-300'}`}>
+                                                    {alignDonationLeft && <span className="text-white text-[10px]">✔</span>}
+                                                </div>
+                                                <span className="text-sm text-neutral-700 font-medium">왼쪽 정렬 활성화</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* License Card */}
+                            <div className="p-4 bg-amber-50 rounded-2xl border border-amber-100 shadow-sm space-y-2">
+                                <h3 className="text-xs font-bold text-amber-800 flex items-center gap-1.5">ℹ️ 폰트 라이선스 안내</h3>
+                                <div className="text-[11px] text-amber-700 leading-relaxed">
+                                    <p>• 카페24 동동: 상업적 이용 가능</p>
+                                    <p>• M PLUS Rounded 1c: 구글 오픈 라이선스(OFL)</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Right Panel */}
+                        <div className="lg:col-span-8 space-y-6">
+                            {/* Live Preview */}
+                            <div className="bg-white rounded-2xl shadow-sm border border-neutral-200 overflow-hidden flex flex-col">
+                                <div className="bg-neutral-100 px-4 py-3 border-b border-neutral-200 flex items-center gap-2">
+                                    <div className="w-3 h-3 rounded-full bg-red-400"></div>
+                                    <div className="w-3 h-3 rounded-full bg-amber-400"></div>
+                                    <div className="w-3 h-3 rounded-full bg-green-400"></div>
+                                    <span className="ml-2 text-sm font-medium text-neutral-500 uppercase tracking-widest text-[10px]">Live Preview</span>
+                                </div>
+                                <div 
+                                    className="relative w-full aspect-video bg-slate-900 overflow-hidden bg-cover bg-center" 
+                                    style={{ backgroundImage: `url('${backgroundImageUrl}')` }}
+                                >
+                                    <div 
+                                        className="absolute flex flex-col justify-end overflow-hidden z-10"
+                                        style={{ 
+                                            right: `${FIXED_CONFIG.right}%`, 
+                                            top: `${FIXED_CONFIG.top}%`, 
+                                            width: `${FIXED_CONFIG.width}%`, 
+                                            height: `${FIXED_CONFIG.height}%` 
+                                        }}
+                                    >
+                                        <div className="w-full origin-bottom mb-2" style={{ transform: `scale(${FIXED_CONFIG.scale})` }}>
+                                            <div className="chat_list block relative z-10 w-full">
+                                                {previewChats.map((chat) => (
+                                                    chat.type === 'donation' ? (
+                                                        <div key={chat.id} className="chat_box chat-preview-item">
+                                                            <div className="donation_box bg-[#1b5e4f] text-white p-4 rounded-xl shadow-md border border-[#14493e]" style={{ fontFamily: 'var(--main-font)'}}>
+                                                                <div className="font-bold text-lg mb-1">위플</div>
+                                                                <div className="font-bold">치즈 후원</div>
+                                                                <div className="mt-3 bg-[#0c3128] inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-bold">🧀 {chat.amount}</div>
+                                                            </div>
+                                                        </div>
+                                                    ) : (
+                                                        <div key={chat.id} className="chat_box chat chat-preview-item">
+                                                            <span className="text">{chat.text}</span>
+                                                        </div>
+                                                    )
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Result Code */}
+                            <div className="bg-slate-900 rounded-2xl shadow-sm overflow-hidden flex flex-col">
+                                <div className="flex justify-between items-center px-4 py-3 bg-slate-800 border-b border-slate-700">
+                                    <span className="text-sm font-medium text-slate-300">📄 완성된 CSS 코드 결과물</span>
+                                    <button 
+                                        onClick={copyToClipboard} 
+                                        className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${copied ? 'bg-green-500 text-white' : 'bg-indigo-600 text-white hover:bg-indigo-500'}`}
+                                    >
+                                        {copied ? '복사 완료!' : '코드 복사하기'}
+                                    </button>
+                                </div>
+                                <div className="p-4 overflow-x-auto text-sm font-mono text-slate-300 leading-relaxed h-[350px] code-scrollbar bg-[#0f172a]">
+                                    <pre className="m-0"><code>{generatedCSS}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
