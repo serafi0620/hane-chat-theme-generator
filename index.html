@@ -46,6 +46,16 @@
         body {
             font-family: 'Pretendard', sans-serif;
         }
+        .high-quality-preview {
+            image-rendering: -webkit-optimize-contrast; /* 크롬/사파리 선명도 최적화 */
+            image-rendering: crisp-edges;
+            backface-visibility: hidden;
+            transform: translateZ(0); /* GPU 가속 강제 */
+        }
+
+        .scaled-container {
+            will-change: transform;
+            transform-style: preserve-3d;
     </style>
 </head>
 <body class="bg-neutral-50 text-neutral-800">
