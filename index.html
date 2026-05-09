@@ -16,6 +16,14 @@
     <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700&display=swap" rel="stylesheet">
 
     <style>
+    @font-face {
+        font-family: 'CookieRun';
+        src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/CookieRun-Regular.woff') format('woff');
+        font-weight: normal;
+        font-display: swap;
+    }
+    @import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400&display=swap');
+
         /* Custom Styles & Scrollbar */
         .custom-scrollbar::-webkit-scrollbar {
             width: 6px;
@@ -161,16 +169,7 @@
             }, []);
 
             // 실제로 복사되는 CSS (font-family가 제외됨)
-            const generatedCSS = `/* Import */
-@font-face {
-    font-family: 'CookieRun';
-    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/CookieRun-Regular.woff') format('woff');
-    font-weight: normal;
-    font-display: swap;
-}
-@import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400&display=swap');
-
-/* 컬러 팔레트 */
+            const generatedCSS = `/* 컬러 팔레트 */
 :root {
     --bubble-bg-color: ${bubbleBgColor};
     --bubble-line-color: ${bubbleLineColor};
