@@ -91,38 +91,38 @@
             const [stapleColor, setStapleColor] = useState('#025B88');
             const [stapleWidth, setStapleWidth] = useState(16);
             const [stapleHeight, setStapleHeight] = useState(8);
+            const fontSize = 30; // 텍스트 크기 30px로 고정
             
             const [removeDonationWidth, setRemoveDonationWidth] = useState(true);
             const [alignDonationLeft, setAlignDonationLeft] = useState(true);
             
-            // 새롭게 추가된 상태: 도네이션 점선 테두리 체크박스 (기본값 true로 변경)
             const [showDonationOutline, setShowDonationOutline] = useState(true);
             
-            // 미리보기 해상도 비율 고정을 위한 상태 및 Ref 추가
+            // 미리보기 해상도 비율 고정을 위한 상태 및 Ref
             const previewRef = useRef(null);
             const [previewScale, setPreviewScale] = useState(1);
 
-            // 체크박스 클릭 시 다음 채팅을 도네이션으로 강제하기 위한 Ref
             const forceNextDonation = useRef(false);
 
+            // 미리보기 기준 해상도를 1920x1080으로 올림에 따라,
+            // 채팅창이 실제 방송화면(OBS)에서 차지할 법한 리얼한 비율로 재조정했습니다.
             const FIXED_CONFIG = {
-                right: -4,
-                top: 16.5,
-                width: 50,
-                height: 68,
-                scale: 0.5
+                right: 12,       // 우측 여백
+                top: 16,        // 상단 여백
+                width: 25,      // 1920 해상도 기준 25% (약 480px 너비)
+                height: 65,     // 높이 75%
+                scale: 0.7      // 스케일을 1.0으로 키워 1920 해상도에서 곡률이 체감상 줄어들어 보이게 유도
             };
             
             const [copied, setCopied] = useState(false);
-            const codeRef = useRef(null);
             const backgroundImageUrl = "https://lh3.googleusercontent.com/d/1C73LrR_cGFt-zlU3UoWLJbUDyvxop6Fj";
 
             const applyPreset = (type) => {
                 if (type === 'default') {
                     setBubbleBgColor('#f3e6d5');
                     setBubbleLineColor('#C9B09E');
-                    setBubbleTxtColor('#7B6151');
-                    setStapleColor('#7B6151');
+                    setBubbleTxtColor('#47382e');
+                    setStapleColor('#47382e');
                     setStapleWidth(14);
                     setStapleHeight(6);
                 } else if (type === 'newOutfit') {
@@ -142,13 +142,13 @@
             const messageIndexRef = useRef(2);
             const idCounterRef = useRef(2);
 
-            // 미리보기 컨테이너 크기 변화 감지 (가상 캔버스 스케일 조정용)
+            // 가상 캔버스 스케일 조정을 1024 -> 1920 해상도 기준으로 변경
             useEffect(() => {
                 if (!previewRef.current) return;
                 const observer = new ResizeObserver((entries) => {
                     for (let entry of entries) {
-                        // 1024를 기준(가상 캔버스 가로 픽셀)으로 화면 너비에 맞춰 확대/축소
-                        setPreviewScale(entry.contentRect.width / 1024);
+                        // 1920을 기준(가상 캔버스 가로 픽셀)으로 화면 너비에 맞춰 확대/축소
+                        setPreviewScale(entry.contentRect.width / 1920);
                     }
                 });
                 observer.observe(previewRef.current);
@@ -176,6 +176,7 @@
                                 amount: randomAmount
                             }
                         ];
+                        // 더 많은 채팅을 보여주기 위해 12개에서 15개로 약간 늘림
                         return nextChats.slice(-12);
                     });
                     
@@ -188,7 +189,6 @@
                 return () => clearTimeout(timeoutId);
             }, []);
 
-            // 실제로 복사되는 CSS (font-family가 제외됨)
             const generatedCSS = `/* 컬러 팔레트 */
 :root {
     --bubble-bg-color: ${bubbleBgColor};
@@ -271,10 +271,12 @@
 
             return (
                 <div className="p-4 md:p-8 max-w-[1440px] mx-auto space-y-8">
-                    {/* 미리보기 전용 스타일: generatedCSS에 폰트 설정을 추가로 덧씌움 */}
                     <style dangerouslySetInnerHTML={{ __html: `
                         ${generatedCSS}
-                        .chat_list .text { font-family: var(--main-font); }
+                        .chat_list .text { 
+                            font-family: var(--main-font); 
+                            font-size: ${fontSize}px !important;
+                        }
                         .chat-preview-item { animation: fadeInUp 0.3s ease-out forwards; }
                         .chat_list .chat_box:not(.chat) .donation_box::after {
                             top: 6px !important; 
@@ -284,7 +286,6 @@
                         }
                     `}} />
 
-                    {/* Header */}
                     <div className="text-center space-y-2">
                         <h1 className="text-3xl md:text-4xl font-bold text-neutral-900 tracking-tight flex items-center justify-center gap-3">
                             <span className="text-amber-400">✨</span> CUSTOM
@@ -383,7 +384,6 @@
                                                 <span className="text-xs text-neutral-700 font-medium">왼쪽 정렬(左揃え)</span>
                                             </div>
 
-                                            {/* 도네이션 점선 테두리 설정 옵션 추가 */}
                                             <div className="flex flex-col gap-2 bg-neutral-50 rounded-lg border border-neutral-100 p-3">
                                                 <div className="flex items-center gap-3 cursor-pointer group"
                                                     onClick={() => {
@@ -413,7 +413,7 @@
                                         <div className="w-3 h-3 rounded-full bg-red-400"></div>
                                         <div className="w-3 h-3 rounded-full bg-amber-400"></div>
                                         <div className="w-3 h-3 rounded-full bg-green-400"></div>
-                                        <span className="ml-3 text-xs font-bold text-neutral-400 uppercase tracking-widest">Live Stream</span>
+                                        <span className="ml-3 text-xs font-bold text-neutral-400 uppercase tracking-widest">Live Stream (1080p Scale)</span>
                                         <span className="ml-3 text-[10px] font-bold text-red-500 bg-red-50/10 px-2 py-0.5 rounded border border-red-500/20"> ⚠ 도네는 임시로 실제와 다름 (ドネーションは実際の表示とは異なります)</span>
                                     </div>
                                 </div>
@@ -422,12 +422,12 @@
                                     className="relative w-full aspect-video bg-slate-900 overflow-hidden bg-cover bg-center" 
                                     style={{ backgroundImage: `url('${backgroundImageUrl}')` }}
                                 >
-                                    {/* 고정 해상도 가상 캔버스 영역 (브라우저 확대/축소에 상관없이 일정한 비율 유지) */}
+                                    {/* 고해상도(1920x1080) 가상 캔버스로 변경 */}
                                     <div 
                                         className="absolute top-0 left-0 origin-top-left"
                                         style={{ 
-                                            width: '1024px', 
-                                            height: '576px',
+                                            width: '1920px', 
+                                            height: '1080px',
                                             transform: `scale(${previewScale})`
                                         }}
                                     >
@@ -447,8 +447,8 @@
                                                             <div key={chat.id} className="chat_box chat-preview-item">
                                                                 <div className="donation_box flex flex-col rounded-[18px] shadow-md border-2 border-[#1c4b40] overflow-hidden bg-[#246153] text-white" style={{ fontFamily: "'Pretendard', sans-serif" }}>
                                                                     <div className="p-4 pb-3">
-                                                                        <div className="font-bold text-[15px] mb-1 text-white/90">하무</div>
-                                                                        <div className="font-extrabold text-[16px] leading-snug break-all">도네이션 테스트 와 ㅏ</div>
+                                                                        <div className="font-bold mb-1 text-white/90" style={{ fontSize: `${Math.max(14, fontSize - 6)}px` }}>하무</div>
+                                                                        <div className="font-extrabold leading-snug break-all" style={{ fontSize: `${fontSize}px` }}>도네이션 테스트 와 ㅏ</div>
                                                                     </div>
                                                                     <div className="bg-[#18493d] px-4 py-2.5">
                                                                         <div className="bg-[#0f2c24] inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[14px] font-bold">
