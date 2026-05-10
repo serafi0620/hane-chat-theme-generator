@@ -98,6 +98,10 @@
             // 새롭게 추가된 상태: 도네이션 점선 테두리 체크박스 (기본값 true로 변경)
             const [showDonationOutline, setShowDonationOutline] = useState(true);
             
+            // 미리보기 해상도 비율 고정을 위한 상태 및 Ref 추가
+            const previewRef = useRef(null);
+            const [previewScale, setPreviewScale] = useState(1);
+
             // 체크박스 클릭 시 다음 채팅을 도네이션으로 강제하기 위한 Ref
             const forceNextDonation = useRef(false);
 
@@ -137,6 +141,19 @@
             ]);
             const messageIndexRef = useRef(2);
             const idCounterRef = useRef(2);
+
+            // 미리보기 컨테이너 크기 변화 감지 (가상 캔버스 스케일 조정용)
+            useEffect(() => {
+                if (!previewRef.current) return;
+                const observer = new ResizeObserver((entries) => {
+                    for (let entry of entries) {
+                        // 1024를 기준(가상 캔버스 가로 픽셀)으로 화면 너비에 맞춰 확대/축소
+                        setPreviewScale(entry.contentRect.width / 1024);
+                    }
+                });
+                observer.observe(previewRef.current);
+                return () => observer.disconnect();
+            }, []);
 
             useEffect(() => {
                 let timeoutId;
@@ -235,7 +252,7 @@
     min-width: 250px !important;
     box-sizing: border-box !important;
     margin: 0 !important;${showDonationOutline ? '\n    position: relative !important;\n\n    outline: 3px solid rgba(0, 0, 0, 0.2) !important;\n    outline-offset: -3px !important;' : ''}
-}${showDonationOutline ? `\n\n.chat_list .chat_box:not(.chat) .donation_box::after {\n    content: '';\n    position: absolute;\n    top: 8px; left: 8px; right: 8px; bottom: 8px;\n    pointer-events: none;\n    background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect x='1' y='1' width='calc(100%25 - 2px)' height='calc(100%25 - 2px)' fill='none' rx='18' ry='18' stroke='rgba(0,0,0,0.2)' stroke-width='3' stroke-dasharray='12%2c 12' stroke-dashoffset='0' stroke-linecap='butt'/%3e%3c/svg%3e");\n}` : ''}`;
+}${showDonationOutline ? `\n\n.chat_list .chat_box:not(.chat) .donation_box::after {\n    content: '';\n    position: absolute;\n    top: 6px; left: 6px; right: 6px; bottom: 6px;\n    pointer-events: none;\n    background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect x='1' y='1' width='calc(100%25 - 2px)' height='calc(100%25 - 2px)' fill='none' rx='18' ry='18' stroke='rgba(0,0,0,0.2)' stroke-width='3' stroke-dasharray='12%2c 12' stroke-dashoffset='0' stroke-linecap='butt'/%3e%3c/svg%3e");\n}` : ''}`;
 
             const copyToClipboard = () => {
                 const textArea = document.createElement('textarea');
@@ -395,42 +412,53 @@
                                     </div>
                                 </div>
                                 <div 
+                                    ref={previewRef}
                                     className="relative w-full aspect-video bg-slate-900 overflow-hidden bg-cover bg-center" 
                                     style={{ backgroundImage: `url('${backgroundImageUrl}')` }}
                                 >
+                                    {/* 고정 해상도 가상 캔버스 영역 (브라우저 확대/축소에 상관없이 일정한 비율 유지) */}
                                     <div 
-                                        className="absolute flex flex-col justify-end overflow-hidden z-10"
+                                        className="absolute top-0 left-0 origin-top-left"
                                         style={{ 
-                                            right: `${FIXED_CONFIG.right}%`, 
-                                            top: `${FIXED_CONFIG.top}%`, 
-                                            width: `${FIXED_CONFIG.width}%`, 
-                                            height: `${FIXED_CONFIG.height}%` 
+                                            width: '1024px', 
+                                            height: '576px',
+                                            transform: `scale(${previewScale})`
                                         }}
                                     >
-                                        <div className="w-full origin-bottom mb-2" style={{ transform: `scale(${FIXED_CONFIG.scale})` }}>
-                                            <div className="chat_list block relative z-10 w-full">
-                                                {previewChats.map((chat) => (
-                                                    chat.type === 'donation' ? (
-                                                        <div key={chat.id} className="chat_box chat-preview-item">
-                                                            <div className="donation_box flex flex-col rounded-xl shadow-md border-2 border-[#1c4b40] overflow-hidden bg-[#246153] text-white" style={{ fontFamily: "'Pretendard', sans-serif" }}>
-                                                                <div className="p-4 pb-3">
-                                                                    <div className="font-bold text-[15px] mb-1 text-white/90">하무</div>
-                                                                    <div className="font-extrabold text-[16px] leading-snug break-all">도네이션 테스트 와</div>
-                                                                </div>
-                                                                <div className="bg-[#18493d] px-4 py-2.5">
-                                                                    <div className="bg-[#0f2c24] inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[14px] font-bold">
-                                                                        <svg className="w-4 h-4 text-white/90" viewBox="0 0 24 24" fill="currentColor"><path d="M21 4H3C1.89 4 1 4.89 1 6V18C1 19.11 1.89 20 3 20H21C22.11 20 23 19.11 23 18V6C23 4.89 22.11 4 21 4ZM21 18H3V12H21V18ZM21 8H3V6H21V8Z"/></svg>
-                                                                        {chat.amount}
+                                        <div 
+                                            className="absolute flex flex-col justify-end overflow-hidden z-10"
+                                            style={{ 
+                                                right: `${FIXED_CONFIG.right}%`, 
+                                                top: `${FIXED_CONFIG.top}%`, 
+                                                width: `${FIXED_CONFIG.width}%`, 
+                                                height: `${FIXED_CONFIG.height}%` 
+                                            }}
+                                        >
+                                            <div className="w-full origin-bottom mb-2" style={{ transform: `scale(${FIXED_CONFIG.scale})` }}>
+                                                <div className="chat_list block relative z-10 w-full">
+                                                    {previewChats.map((chat) => (
+                                                        chat.type === 'donation' ? (
+                                                            <div key={chat.id} className="chat_box chat-preview-item">
+                                                                <div className="donation_box flex flex-col rounded-[18px] shadow-md border-2 border-[#1c4b40] overflow-hidden bg-[#246153] text-white" style={{ fontFamily: "'Pretendard', sans-serif" }}>
+                                                                    <div className="p-4 pb-3">
+                                                                        <div className="font-bold text-[15px] mb-1 text-white/90">하무</div>
+                                                                        <div className="font-extrabold text-[16px] leading-snug break-all">도네이션 테스트 와 ㅏ</div>
+                                                                    </div>
+                                                                    <div className="bg-[#18493d] px-4 py-2.5">
+                                                                        <div className="bg-[#0f2c24] inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[14px] font-bold">
+                                                                            <svg className="w-4 h-4 text-white/90" viewBox="0 0 24 24" fill="currentColor"><path d="M21 4H3C1.89 4 1 4.89 1 6V18C1 19.11 1.89 20 3 20H21C22.11 20 23 19.11 23 18V6C23 4.89 22.11 4 21 4ZM21 18H3V12H21V18ZM21 8H3V6H21V8Z"/></svg>
+                                                                            {chat.amount}
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                    ) : (
-                                                        <div key={chat.id} className="chat_box chat chat-preview-item">
-                                                            <span className="text">{chat.text}</span>
-                                                        </div>
-                                                    )
-                                                ))}
+                                                        ) : (
+                                                            <div key={chat.id} className="chat_box chat chat-preview-item">
+                                                                <span className="text">{chat.text}</span>
+                                                            </div>
+                                                        )
+                                                    ))}
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
