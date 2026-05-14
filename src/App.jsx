@@ -53,6 +53,23 @@ function App() {
     const messageIndexRef = useRef(2);
     const idCounterRef = useRef(2);
     const donationThemeCounterRef = useRef(0);
+    const isFirstRun = useRef(true);
+
+    useEffect(() => {
+        if (isFirstRun.current) {
+            isFirstRun.current = false;
+            return;
+        }
+        forceNextDonation.current = true;
+    }, [
+        removeDonationWidth,
+        alignDonationLeft,
+        showDonationOutline,
+        donationBorderBrightness,
+        donationBorderOpacity,
+        donationBorderThickness,
+        donationBorderDashGap
+    ]);
 
     useEffect(() => {
         let timeoutId;
