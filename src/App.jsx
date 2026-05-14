@@ -14,9 +14,9 @@ function App() {
     const [stapleColor, setStapleColor] = useState('#025B88');
     const [stapleWidth, setStapleWidth] = useState(16);
     const [stapleHeight, setStapleHeight] = useState(8);
-    const fontSize = 30; // 텍스트 크기 30px로 고정
+    const fontSize = 24; // 텍스트 크기 24px로 고정
     
-    const [removeDonationWidth, setRemoveDonationWidth] = useState(true);
+    const [removeDonationWidth, setRemoveDonationWidth] = useState(false);
     const [alignDonationLeft, setAlignDonationLeft] = useState(true);
     const [showDonationOutline, setShowDonationOutline] = useState(true);
     const [donationBorderBrightness, setDonationBorderBrightness] = useState(0);
@@ -133,6 +133,9 @@ function App() {
                 .chat_list .text { 
                     font-family: var(--main-font); 
                     font-size: ${fontSize}px !important;
+                    line-height: 1.2 !important;
+                    vertical-align: middle !important;
+                    display: inline-block !important;
                 }
                 .chat_list .chat_box:not(.chat) .donation_box::after {
                     top: ${donationBorderThickness * 2}px !important; 

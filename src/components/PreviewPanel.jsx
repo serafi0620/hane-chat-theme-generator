@@ -48,8 +48,8 @@ const PreviewPanel = ({ previewChats, fontSize, backgroundImageUrl }) => {
                     <div className="w-3 h-3 rounded-full bg-red-400"></div>
                     <div className="w-3 h-3 rounded-full bg-amber-400"></div>
                     <div className="w-3 h-3 rounded-full bg-green-400"></div>
-                    <span className="ml-3 text-xs font-bold text-neutral-400 uppercase tracking-widest">Live Stream (1080p Scale)</span>
-                    <span className="ml-3 text-[10px] font-bold text-red-500 bg-red-50/10 px-2 py-0.5 rounded border border-red-500/20"> ⚠ 도네는 임시로 실제와 다름 (ド네이션은 실제의 표시와 다릅니다)</span>
+                    <span className="ml-3 text-xs font-bold text-neutral-400 uppercase tracking-widest">미리보기</span>
+                    <span className="ml-3 text-[10px] font-bold text-red-500 bg-red-50/10 px-2 py-0.5 rounded border border-red-500/20"> ⚠ 임시로 실제와 다름 (仮のため、実際とは異なります。)</span>
                 </div>
             </div>
             <div 
@@ -69,17 +69,16 @@ const PreviewPanel = ({ previewChats, fontSize, backgroundImageUrl }) => {
                         >
                             <div className="chat_list w-full flex justify-center">
                                 <div className="chat_box chat !m-0" style={{ width: 400 }}>
-                                    <span className="text" style={{ fontSize: '30px' }}>말풍선 샘플 미리보기</span>
+                                    <span className="text" style={{ fontSize: '24px' }}>말풍선 샘플 미리보기</span>
                                 </div>
                             </div>
                             <div className="chat_list w-full flex justify-center">
                                 <div className="chat_box !m-0 w-full">
                                     <div className={`donation_box flex flex-col rounded-[18px] shadow-md border-2 ${sampleTheme.border} overflow-hidden ${sampleTheme.bg} text-white`} style={{ fontFamily: "'Pretendard', sans-serif" }}>
                                         <div className="p-4 pb-3">
-                                            <div className="font-bold mb-1 text-white/90 text-[24px]">하무</div>
-                                            <div className="font-extrabold leading-snug break-all text-[30px]">도네이션 샘플입니다</div>
-                                        </div>
-                                        <div className={`${sampleTheme.bottomBg} px-4 py-3`}>
+                                            <div className="font-bold mb-1 text-white/90 text-[18px]">하무</div>
+                                            <div className="font-extrabold leading-snug break-all text-[24px]">도네이션 샘플입니다</div>
+                                        </div>                                        <div className={`${sampleTheme.bottomBg} px-4 py-3`}>
                                             <div className={`${sampleTheme.badgeBg} inline-flex items-center gap-2 px-4 py-2 rounded-full text-[18px] font-bold`}>
                                                 <svg className="w-5 h-5 text-white/90" viewBox="0 0 24 24" fill="currentColor"><path d="M21 4H3C1.89 4 1 4.89 1 6V18C1 19.11 1.89 20 3 20H21C22.11 20 23 19.11 23 18V6C23 4.89 22.11 4 21 4ZM21 18H3V12H21V18ZM21 8H3V6H21V8Z"/></svg>
                                                 1,000
@@ -114,7 +113,7 @@ const PreviewPanel = ({ previewChats, fontSize, backgroundImageUrl }) => {
                                     const theme = DONATION_THEMES[chat.theme || 'green'];
                                     return chat.type === 'donation' ? (
                                         <div key={chat.id} className="chat_box chat-preview-item">
-                                            <div className={`donation_box flex flex-col rounded-[18px] shadow-md border-2 ${theme.border} overflow-hidden ${theme.bg} text-white`} style={{ fontFamily: "'Pretendard', sans-serif" }}>
+                                            <div className={`donation_box flex flex-col rounded-[16px] shadow-md border-2 ${theme.border} overflow-hidden ${theme.bg} text-white`} style={{ fontFamily: "'Pretendard', sans-serif" }}>
                                                 <div className="p-4 pb-3">
                                                     <div className="font-bold mb-1 text-white/90" style={{ fontSize: `${Math.max(14, fontSize - 6)}px` }}>하무</div>
                                                     <div className="font-extrabold leading-snug break-all" style={{ fontSize: `${fontSize}px` }}>도네이션 테스트 와 ㅏ</div>

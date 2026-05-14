@@ -20,7 +20,7 @@ export const generateCSS = (config) => {
     --bubble-bg-color: ${bubbleBgColor};
     --bubble-line-color: ${bubbleLineColor};
     --bubble-txt-color: ${bubbleTxtColor};
-    --main-font: 'CookieRun', 'M PLUS Rounded 1c', sans-serif;
+    --main-font: 'Gyeombalbal', 'M PLUS Rounded 1c', sans-serif;
     --staple-color: ${stapleColor};
     --staple-width: ${stapleWidth}px;
     --staple-height: ${stapleHeight}px;
@@ -63,11 +63,11 @@ export const generateCSS = (config) => {
     top: calc(50% - var(--staple-height) - var(--staple-height) / 2);
 }
 .chat_list .chat_box.chat::after {
-    top: calc(50% + var(--staple-height) - var(--staple-height) / 2);
+    top: calc(50% - var(--staple-height) - var(--staple-height) / 2 + var(--staple-height) * 2);
 }
 
 .chat_list .chat_box:not(.chat) {
-    ${removeDonationWidth ? '' : 'max-width: 100% !important;\n    width: 95% !important;'}
+    ${removeDonationWidth ? 'max-width: 100% !important;\n    width: 100% !important;' : ''}
     margin: 20px 5px 20px 5px  !important;
     justify-self: ${alignDonationLeft ? 'left' : 'center'} !important;
 }
@@ -79,5 +79,5 @@ export const generateCSS = (config) => {
     box-sizing: border-box !important;
     margin: 0 !important;
     position: relative !important;
-}${showDonationOutline ? `\n\n/* 도네이션 실선 테두리 (Solid) */\n.chat_list .chat_box:not(.chat) .donation_box::before {\n    content: '';\n    position: absolute;\n    top: 0; left: 0; right: 0; bottom: 0;\n    border: ${donationBorderThickness}px solid white;\n    border-radius: 18px;\n    box-sizing: border-box !important;\n    pointer-events: none;\n    z-index: 10;\n    mix-blend-mode: overlay;\n    opacity: ${donationBorderOpacity / 100};\n    filter: brightness(${donationBorderBrightness}%);\n}\n\n/* 도네이션 점선 테두리 (Dashed) */\n.chat_list .chat_box:not(.chat) .donation_box::after {\n    content: '';\n    position: absolute;\n    top: ${donationBorderThickness * 2}px; left: ${donationBorderThickness * 2}px; right: ${donationBorderThickness * 2}px; bottom: ${donationBorderThickness * 2}px;\n    pointer-events: none;\n    z-index: 11;\n    background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect x='1' y='1' width='calc(100%25 - 2px)' height='calc(100%25 - 2px)' fill='none' rx='18' ry='18' stroke='white' stroke-width='${donationBorderThickness}' stroke-dasharray='${donationBorderDashGap}%2c ${donationBorderDashGap}' stroke-dashoffset='0' stroke-linecap='butt'/%3e%3c/svg%3e");\n    mix-blend-mode: overlay;\n    opacity: ${donationBorderOpacity / 100};\n    filter: brightness(${donationBorderBrightness}%);\n}` : ''}`;
+}${showDonationOutline ? `\n\n/* 도네이션 실선 테두리 (Solid) */\n.chat_list .chat_box:not(.chat) .donation_box::before {\n    content: '';\n    position: absolute;\n    top: 0; left: 0; right: 0; bottom: 0;\n    border: ${donationBorderThickness}px solid white;\n    border-radius: 16px;\n    box-sizing: border-box !important;\n    pointer-events: none;\n    z-index: 10;\n    mix-blend-mode: overlay;\n    opacity: ${donationBorderOpacity / 100};\n    filter: brightness(${donationBorderBrightness}%);\n}\n\n/* 도네이션 점선 테두리 (Dashed) */\n.chat_list .chat_box:not(.chat) .donation_box::after {\n    content: '';\n    position: absolute;\n    top: ${donationBorderThickness * 2}px; left: ${donationBorderThickness * 2}px; right: ${donationBorderThickness * 2}px; bottom: ${donationBorderThickness * 2}px;\n    pointer-events: none;\n    z-index: 11;\n    background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect x='1' y='1' width='calc(100%25 - 2px)' height='calc(100%25 - 2px)' fill='none' rx='16' ry='16' stroke='white' stroke-width='${donationBorderThickness}' stroke-dasharray='${donationBorderDashGap}%2c ${donationBorderDashGap}' stroke-dashoffset='0' stroke-linecap='butt'/%3e%3c/svg%3e");\n    mix-blend-mode: overlay;\n    opacity: ${donationBorderOpacity / 100};\n    filter: brightness(${donationBorderBrightness}%);\n}` : ''}`;
 };
