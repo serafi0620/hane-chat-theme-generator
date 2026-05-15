@@ -26,7 +26,14 @@ function App() {
 
     // 하무 설정 상태
     const [donationHamuEnabled, setDonationHamuEnabled] = useState(true);
-    const [donationHamuType, setDonationHamuType] = useState('cheeze'); // 'cheeze' or 'heart'
+    const [useTierSpecificIcons, setUseTierSpecificIcons] = useState(false);
+    const [unifiedIconType, setUnifiedIconType] = useState('cheeze');
+    const [donationTiers, setDonationTiers] = useState({
+        1000: 'cheeze',
+        10000: 'cheeze',
+        100000: 'cheeze',
+        1000000: 'cheeze'
+    });
     const [donationHamuPosition, setDonationHamuPosition] = useState('right'); // 'left', 'center', 'right'
     const [donationHamuSize, setDonationHamuSize] = useState(50);
     
@@ -66,7 +73,23 @@ function App() {
             isFirstRun.current = false;
             return;
         }
-        forceNextDonation.current = true;
+        
+        // 설정 변경 시 4가지 금액대 도네이션을 미리보기에 즉시 주입
+        const tiers = ['1,000', '10,000', '100,000', '1,000,000'];
+        const themes = ['purple', 'green', 'gold', 'red'];
+        
+        setPreviewChats(prev => {
+            const newDonations = tiers.map((amount, idx) => ({
+                id: idCounterRef.current++,
+                text: `${amount}원 설정 테스트`,
+                type: 'donation',
+                amount: amount,
+                theme: themes[idx]
+            }));
+            
+            // 기존 채팅 목록 끝에 4개의 도네이션 추가 (최대 12개 유지)
+            return [...prev, ...newDonations].slice(-12);
+        });
     }, [
         removeDonationWidth,
         alignDonationLeft,
@@ -76,7 +99,9 @@ function App() {
         donationBorderThickness,
         donationBorderDashGap,
         donationHamuEnabled,
-        donationHamuType,
+        useTierSpecificIcons,
+        unifiedIconType,
+        donationTiers,
         donationHamuPosition,
         donationHamuSize
     ]);
@@ -91,10 +116,14 @@ function App() {
                     forceNextDonation.current = false;
                 }
 
-                const randomAmount = ['1,000', '5,000', '10,000', '50,000'][Math.floor(Math.random() * 4)];
-                const themes = ['green', 'gold', 'red'];
-                const theme = isDonation ? themes[donationThemeCounterRef.current % 3] : null;
-                if (isDonation) donationThemeCounterRef.current++;
+                const randomAmount = ['1,000', '5,000', '10,000', '50,000', '100,000', '1,000,000'][Math.floor(Math.random() * 6)];
+                
+                // 금액에 따른 테마 매핑
+                let theme = 'purple';
+                if (randomAmount === '1,000') theme = 'purple';
+                else if (randomAmount === '5,000' || randomAmount === '10,000') theme = 'green';
+                else if (randomAmount === '50,000' || randomAmount === '100,000') theme = 'gold';
+                else if (randomAmount === '1,000,000') theme = 'red';
 
                 const nextChats = [
                     ...prev, 
@@ -103,7 +132,7 @@ function App() {
                         text: CHAT_DATA[messageIndexRef.current],
                         type: isDonation ? 'donation' : 'chat',
                         amount: randomAmount,
-                        theme: theme
+                        theme: isDonation ? theme : null
                     }
                 ];
                 return nextChats.slice(-12);
@@ -137,9 +166,13 @@ function App() {
         donationBorderOpacity,
         donationBorderThickness,
         donationBorderDashGap,
+        donationHamuEnabled,
         donationHamuPosition,
         donationHamuSize: donationHamuEnabled ? donationHamuSize : 0,
-        donationHamuUrl: hamuUrls[donationHamuType]
+        donationTiers,
+        useTierSpecificIcons,
+        unifiedIconType,
+        hamuUrls
     };
 
     const generatedCSS = generateCSS(config);
@@ -176,8 +209,12 @@ function App() {
                         {...config}
                         donationHamuEnabled={donationHamuEnabled}
                         setDonationHamuEnabled={setDonationHamuEnabled}
-                        donationHamuType={donationHamuType}
-                        setDonationHamuType={setDonationHamuType}
+                        useTierSpecificIcons={useTierSpecificIcons}
+                        setUseTierSpecificIcons={setUseTierSpecificIcons}
+                        unifiedIconType={unifiedIconType}
+                        setUnifiedIconType={setUnifiedIconType}
+                        donationTiers={donationTiers}
+                        setDonationTiers={setDonationTiers}
                         actualHamuSize={donationHamuSize}
                         setDonationHamuSize={setDonationHamuSize}
                         donationHamuPosition={donationHamuPosition}

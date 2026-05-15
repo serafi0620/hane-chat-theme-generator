@@ -16,7 +16,9 @@ const EditorPanel = ({
     donationBorderThickness, setDonationBorderThickness,
     donationBorderDashGap, setDonationBorderDashGap,
     donationHamuEnabled, setDonationHamuEnabled,
-    donationHamuType, setDonationHamuType,
+    useTierSpecificIcons, setUseTierSpecificIcons,
+    unifiedIconType, setUnifiedIconType,
+    donationTiers, setDonationTiers,
     donationHamuPosition, setDonationHamuPosition,
     actualHamuSize, setDonationHamuSize,
     applyPreset,
@@ -250,27 +252,62 @@ const EditorPanel = ({
 
                                 {donationHamuEnabled && (
                                     <div className="space-y-4 animate-fadeIn">
-                                        <div className="space-y-1.5">
-                                            <label className="text-[11px] font-bold text-neutral-500 uppercase">아이콘 타입(アイコンタイプ)</label>
-                                            <div className="flex gap-2">
-                                                <button 
-                                                    onClick={() => setDonationHamuType('cheeze')}
-                                                    className={`flex-1 py-2 px-3 rounded-lg text-xs font-bold transition-all border ${donationHamuType === 'cheeze' ? 'bg-indigo-500 border-indigo-500 text-white shadow-sm' : 'bg-white border-neutral-200 text-neutral-600 hover:bg-neutral-50'}`}
+                                        <div className="space-y-3">
+                                            <div className="space-y-2">
+                                                <label className="text-[11px] font-bold text-neutral-500 uppercase">아이콘 타입(アイコンタイプ)</label>
+                                                <div 
+                                                    className="flex items-center gap-2 cursor-pointer group pb-0.5"
+                                                    onClick={() => setUseTierSpecificIcons(!useTierSpecificIcons)}
                                                 >
-                                                    치즈(チーズ)
-                                                </button>
-                                                <button 
-                                                    onClick={() => setDonationHamuType('heart')}
-                                                    className={`flex-1 py-2 px-3 rounded-lg text-xs font-bold transition-all border ${donationHamuType === 'heart' ? 'bg-indigo-500 border-indigo-500 text-white shadow-sm' : 'bg-white border-neutral-200 text-neutral-600 hover:bg-neutral-50'}`}
-                                                >
-                                                    하트(ハート)
-                                                </button>
+                                                    <div className={`w-4 h-4 rounded border flex items-center justify-center transition-all ${useTierSpecificIcons ? 'bg-indigo-500 border-indigo-500 shadow-sm' : 'bg-white border-neutral-300 group-hover:border-neutral-400'}`}>
+                                                        {useTierSpecificIcons && <span className="text-white text-[10px]">✔</span>}
+                                                    </div>
+                                                    <span className="text-[11px] font-bold text-neutral-600">금액별 별도 설정(金額別個別の設定)</span>
+                                                </div>
                                             </div>
+
+                                            {useTierSpecificIcons ? (
+                                                <div className="space-y-2 animate-fadeIn">
+                                                    {[1000, 10000, 100000, 1000000].map((tier) => (
+                                                        <div key={tier} className="flex items-center justify-between gap-3 p-2 bg-white rounded-lg border border-neutral-100 shadow-sm">
+                                                            <span className="text-[10px] font-bold text-neutral-500 w-16">{tier.toLocaleString()}원</span>
+                                                            <div className="flex gap-1 flex-1">
+                                                                <button 
+                                                                    onClick={() => setDonationTiers({...donationTiers, [tier]: 'cheeze'})}
+                                                                    className={`flex-1 py-1.5 px-2 rounded-md text-[10px] font-bold transition-all border ${donationTiers[tier] === 'cheeze' ? 'bg-indigo-500 border-indigo-500 text-white shadow-sm' : 'bg-neutral-50 border-neutral-200 text-neutral-500 hover:bg-neutral-100'}`}
+                                                                >
+                                                                    치즈
+                                                                </button>
+                                                                <button 
+                                                                    onClick={() => setDonationTiers({...donationTiers, [tier]: 'heart'})}
+                                                                    className={`flex-1 py-1.5 px-2 rounded-md text-[10px] font-bold transition-all border ${donationTiers[tier] === 'heart' ? 'bg-indigo-500 border-indigo-500 text-white shadow-sm' : 'bg-neutral-50 border-neutral-200 text-neutral-500 hover:bg-neutral-100'}`}
+                                                                >
+                                                                    하트
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            ) : (
+                                                <div className="flex gap-2 p-2 bg-neutral-50 rounded-xl border border-neutral-100 animate-fadeIn">
+                                                    <button 
+                                                        onClick={() => setUnifiedIconType('cheeze')}
+                                                        className={`flex-1 py-2 px-3 rounded-lg text-xs font-bold transition-all border ${unifiedIconType === 'cheeze' ? 'bg-indigo-500 border-indigo-500 text-white shadow-sm' : 'bg-white border-neutral-200 text-neutral-600 hover:bg-neutral-50'}`}
+                                                    >
+                                                        치즈(チーズ)
+                                                    </button>
+                                                    <button 
+                                                        onClick={() => setUnifiedIconType('heart')}
+                                                        className={`flex-1 py-2 px-3 rounded-lg text-xs font-bold transition-all border ${unifiedIconType === 'heart' ? 'bg-indigo-500 border-indigo-500 text-white shadow-sm' : 'bg-white border-neutral-200 text-neutral-600 hover:bg-neutral-50'}`}
+                                                    >
+                                                        하트(ハート)
+                                                    </button>
+                                                </div>
+                                            )}
                                         </div>
 
                                         <div className="space-y-1.5">
-                                            <label className="text-[11px] font-bold text-neutral-500 uppercase">하무 위치(ハムの位置)</label>
-                                            <div className="flex gap-2">
+                                            <label className="text-[11px] font-bold text-neutral-500 uppercase">하무 위치(ハムの位置)</label>                                            <div className="flex gap-2">
                                                 <button 
                                                     onClick={() => setDonationHamuPosition('left')}
                                                     className={`flex-1 py-2 px-3 rounded-lg text-xs font-bold transition-all border ${donationHamuPosition === 'left' ? 'bg-indigo-500 border-indigo-500 text-white shadow-sm' : 'bg-white border-neutral-200 text-neutral-600 hover:bg-neutral-50'}`}

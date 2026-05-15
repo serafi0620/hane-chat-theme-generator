@@ -19,6 +19,12 @@ const PreviewPanel = ({ previewChats, fontSize, backgroundImageUrl }) => {
     const positionStyle = { right: `${FIXED_CONFIG.right}%`, top: `${FIXED_CONFIG.top}%` };
 
     const DONATION_THEMES = {
+        purple: {
+            border: 'border-[#4b1c6d]',
+            bg: 'bg-[#61248b]',
+            bottomBg: 'bg-[#491873]',
+            badgeBg: 'bg-[#2c0f49]'
+        },
         green: {
             border: 'border-[#1c4b40]',
             bg: 'bg-[#246153]',
@@ -39,7 +45,7 @@ const PreviewPanel = ({ previewChats, fontSize, backgroundImageUrl }) => {
         }
     };
 
-    const sampleTheme = DONATION_THEMES['green'];
+    const sampleTheme = DONATION_THEMES['purple'];
 
     return (
         <div className="bg-white rounded-3xl shadow-md border border-neutral-200 overflow-hidden flex flex-col transition-shadow hover:shadow-lg">
@@ -111,9 +117,10 @@ const PreviewPanel = ({ previewChats, fontSize, backgroundImageUrl }) => {
                             <div className="chat_list block relative z-10 w-full">
                                 {previewChats.map((chat) => {
                                     const theme = DONATION_THEMES[chat.theme || 'green'];
+                                    const amountClass = chat.amount ? `donation_${chat.amount.replace(/,/g, '')}` : '';
                                     return chat.type === 'donation' ? (
                                         <div key={chat.id} className="chat_box chat-preview-item">
-                                            <div className={`donation_box flex flex-col rounded-[16px] shadow-md border-2 ${theme.border} overflow-hidden ${theme.bg} text-white`} style={{ fontFamily: "'Pretendard', sans-serif" }}>
+                                            <div className={`donation_box flex flex-col rounded-[16px] shadow-md border-2 ${theme.border} overflow-hidden ${theme.bg} text-white ${amountClass}`} style={{ fontFamily: "'Pretendard', sans-serif" }}>
                                                 <div className="p-4 pb-3">
                                                     <div className="font-bold mb-1 text-white/90" style={{ fontSize: `${Math.max(14, fontSize - 6)}px` }}>하무</div>
                                                     <div className="font-extrabold leading-snug break-all" style={{ fontSize: `${fontSize}px` }}>도네이션 테스트 와 ㅏ</div>
