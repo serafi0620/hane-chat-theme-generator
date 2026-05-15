@@ -23,6 +23,12 @@ function App() {
     const [donationBorderOpacity, setDonationBorderOpacity] = useState(30);
     const [donationBorderThickness, setDonationBorderThickness] = useState(3);
     const [donationBorderDashGap, setDonationBorderDashGap] = useState(12);
+
+    // 하무 설정 상태
+    const [donationHamuEnabled, setDonationHamuEnabled] = useState(true);
+    const [donationHamuType, setDonationHamuType] = useState('cheeze'); // 'cheeze' or 'heart'
+    const [donationHamuPosition, setDonationHamuPosition] = useState('right'); // 'left', 'center', 'right'
+    const [donationHamuSize, setDonationHamuSize] = useState(50);
     
     const forceNextDonation = useRef(false);
     const backgroundImageUrl = bgImage;  
@@ -68,7 +74,11 @@ function App() {
         donationBorderBrightness,
         donationBorderOpacity,
         donationBorderThickness,
-        donationBorderDashGap
+        donationBorderDashGap,
+        donationHamuEnabled,
+        donationHamuType,
+        donationHamuPosition,
+        donationHamuSize
     ]);
 
     useEffect(() => {
@@ -108,6 +118,11 @@ function App() {
         return () => clearTimeout(timeoutId);
     }, []);
 
+    const hamuUrls = {
+        cheeze: 'https://raw.githubusercontent.com/serafi0620/hane-chat-theme-generator/main/src/img/cheeze.png',
+        heart: 'https://raw.githubusercontent.com/serafi0620/hane-chat-theme-generator/main/src/img/heart.png'
+    };
+
     const config = {
         bubbleBgColor,
         bubbleLineColor,
@@ -121,7 +136,10 @@ function App() {
         donationBorderBrightness,
         donationBorderOpacity,
         donationBorderThickness,
-        donationBorderDashGap
+        donationBorderDashGap,
+        donationHamuPosition,
+        donationHamuSize: donationHamuEnabled ? donationHamuSize : 0,
+        donationHamuUrl: hamuUrls[donationHamuType]
     };
 
     const generatedCSS = generateCSS(config);
@@ -156,6 +174,14 @@ function App() {
                 <div className="lg:col-span-3 space-y-4">
                     <EditorPanel 
                         {...config}
+                        donationHamuEnabled={donationHamuEnabled}
+                        setDonationHamuEnabled={setDonationHamuEnabled}
+                        donationHamuType={donationHamuType}
+                        setDonationHamuType={setDonationHamuType}
+                        actualHamuSize={donationHamuSize}
+                        setDonationHamuSize={setDonationHamuSize}
+                        donationHamuPosition={donationHamuPosition}
+                        setDonationHamuPosition={setDonationHamuPosition}
                         setBubbleBgColor={setBubbleBgColor}
                         setBubbleLineColor={setBubbleLineColor}
                         setBubbleTxtColor={setBubbleTxtColor}
@@ -175,13 +201,15 @@ function App() {
                 </div>
 
                 {/* Right Panel */}
-                <div className="lg:col-span-9 space-y-6">
-                    <PreviewPanel 
-                        previewChats={previewChats}
-                        fontSize={fontSize}
-                        backgroundImageUrl={backgroundImageUrl}
-                    />
-                    <CodePanel generatedCSS={generatedCSS} />
+                <div className="lg:col-span-9">
+                    <div className="sticky top-8 space-y-6">
+                        <PreviewPanel 
+                            previewChats={previewChats}
+                            fontSize={fontSize}
+                            backgroundImageUrl={backgroundImageUrl}
+                        />
+                        <CodePanel generatedCSS={generatedCSS} />
+                    </div>
                 </div>
             </div>
         </div>

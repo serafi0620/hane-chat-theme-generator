@@ -15,6 +15,10 @@ const EditorPanel = ({
     donationBorderOpacity, setDonationBorderOpacity,
     donationBorderThickness, setDonationBorderThickness,
     donationBorderDashGap, setDonationBorderDashGap,
+    donationHamuEnabled, setDonationHamuEnabled,
+    donationHamuType, setDonationHamuType,
+    donationHamuPosition, setDonationHamuPosition,
+    actualHamuSize, setDonationHamuSize,
     applyPreset,
     forceNextDonation
 }) => {
@@ -121,7 +125,7 @@ const EditorPanel = ({
                         <div className="space-y-4 pt-4 border-t border-neutral-50">
                             <label className="text-sm font-bold text-neutral-800 flex items-center gap-2">
                                 <Settings size={14} className="text-indigo-500" />
-                                장식 디테일(装飾ディテール)
+                                장식 디테일(装飾디テール)
                             </label>
                             <div className="space-y-1.5">
                                 <label className="text-[11px] font-bold text-neutral-500 uppercase">장식 색상(装飾の色)</label>
@@ -133,7 +137,7 @@ const EditorPanel = ({
                             <div className="space-y-4">
                                 <div className="space-y-2">
                                     <div className="flex justify-between items-end">
-                                        <label className="text-[11px] font-bold text-neutral-500 uppercase">장식 너비(装飾の幅)[default: 16px]</label>
+                                        <label className="text-[11px] font-bold text-neutral-500 uppercase">장식 너비(装飾의幅)[default: 16px]</label>
                                         <span className="text-xs font-mono font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded">{stapleWidth}px</span>
                                     </div>
                                     <input type="range" min="4" max="30" value={stapleWidth} onChange={(e) => setStapleWidth(e.target.value)} className="w-full h-1.5 bg-neutral-200 rounded-lg appearance-none cursor-pointer accent-indigo-500" />
@@ -168,7 +172,7 @@ const EditorPanel = ({
                                     <div className={`w-5 h-5 rounded-md border flex items-center justify-center transition-all shrink-0 ${removeDonationWidth ? 'bg-indigo-500 border-indigo-500 shadow-sm' : 'bg-white border-neutral-300'}`}>
                                         {removeDonationWidth && <span className="text-white text-[12px] leading-none">✔</span>}
                                     </div>
-                                    <span className="text-xs text-neutral-700 font-bold">너비 꽉 차게 표시(幅をいっぱいに表示)</span>
+                                    <span className="text-xs text-neutral-700 font-bold">너비 꽉 차게 표시(幅를いっぱいに表示)</span>
                                 </div>
                                 
                                 <div className="flex items-center gap-3 p-4 bg-neutral-50 rounded-xl border border-neutral-100 hover:bg-neutral-100/80 transition-colors cursor-pointer group" 
@@ -188,7 +192,7 @@ const EditorPanel = ({
                                     <div className={`w-5 h-5 rounded-md border flex items-center justify-center transition-all shrink-0 ${showDonationOutline ? 'bg-indigo-500 border-indigo-500 shadow-sm' : 'bg-white border-neutral-300'}`}>
                                         {showDonationOutline && <span className="text-white text-[12px] leading-none">✔</span>}
                                     </div>
-                                    <span className="text-xs text-neutral-700 font-bold">점선 테두리 디자인 추가(点線の枠線デザインを追加)</span>
+                                    <span className="text-xs text-neutral-700 font-bold">점선 테두리 디자인 추가(点線の枠선デザインを追加)</span>
                                 </div>
                             </div>
 
@@ -196,7 +200,7 @@ const EditorPanel = ({
                                 <div className="space-y-4 pt-4 border-t border-neutral-100 animate-fadeIn">
                                     <div className="space-y-2">
                                         <div className="flex justify-between items-end">
-                                            <label className="text-[11px] font-bold text-neutral-500 uppercase">테두리 밝기(枠線の明るさ)[default: 0%]</label>
+                                            <label className="text-[11px] font-bold text-neutral-500 uppercase">테두리 밝기(枠線の明る사)[default: 0%]</label>
                                             <span className="text-xs font-mono font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded">{donationBorderBrightness}%</span>
                                         </div>
                                         <input type="range" min="0" max="200" value={donationBorderBrightness} onChange={(e) => setDonationBorderBrightness(Number(e.target.value))} className="w-full h-1.5 bg-neutral-200 rounded-lg appearance-none cursor-pointer accent-indigo-500" />
@@ -204,7 +208,7 @@ const EditorPanel = ({
                                     
                                     <div className="space-y-2">
                                         <div className="flex justify-between items-end">
-                                            <label className="text-[11px] font-bold text-neutral-500 uppercase">테두리 투명도(枠線の不透明度)[default: 30%]</label>
+                                            <label className="text-[11px] font-bold text-neutral-500 uppercase">테두리 투명도(枠線の不透明도)[default: 30%]</label>
                                             <span className="text-xs font-mono font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded">{donationBorderOpacity}%</span>
                                         </div>
                                         <input type="range" min="0" max="100" value={donationBorderOpacity} onChange={(e) => setDonationBorderOpacity(Number(e.target.value))} className="w-full h-1.5 bg-neutral-200 rounded-lg appearance-none cursor-pointer accent-indigo-500" />
@@ -212,7 +216,7 @@ const EditorPanel = ({
 
                                     <div className="space-y-2">
                                         <div className="flex justify-between items-end">
-                                            <label className="text-[11px] font-bold text-neutral-500 uppercase">테두리 두께(枠線の太사)[default: 3px]</label>
+                                            <label className="text-[11px] font-bold text-neutral-500 uppercase">테두리 두께(枠線の太さ)[default: 3px]</label>
                                             <span className="text-xs font-mono font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded">{donationBorderThickness}px</span>
                                         </div>
                                         <input type="range" min="1" max="10" value={donationBorderThickness} onChange={(e) => setDonationBorderThickness(Number(e.target.value))} className="w-full h-1.5 bg-neutral-200 rounded-lg appearance-none cursor-pointer accent-indigo-500" />
@@ -227,6 +231,77 @@ const EditorPanel = ({
                                     </div>
                                 </div>
                             )}
+
+                            <div className="space-y-4 pt-4 border-t border-neutral-100">
+                                <label className="text-sm font-bold text-neutral-800 flex items-center gap-2">
+                                    <Heart size={14} className="text-pink-500" />
+                                    캐릭터 설정(キャラクター設定)
+                                </label>
+                                
+                                <div className="flex items-center gap-3 p-4 bg-neutral-50 rounded-xl border border-neutral-100 hover:bg-neutral-100/80 transition-colors cursor-pointer group" 
+                                    onClick={() => {
+                                        setDonationHamuEnabled(!donationHamuEnabled);
+                                    }}>
+                                    <div className={`w-5 h-5 rounded-md border flex items-center justify-center transition-all shrink-0 ${donationHamuEnabled ? 'bg-indigo-500 border-indigo-500 shadow-sm' : 'bg-white border-neutral-300'}`}>
+                                        {donationHamuEnabled && <span className="text-white text-[12px] leading-none">✔</span>}
+                                    </div>
+                                    <span className="text-xs text-neutral-700 font-bold">하무 아이콘 표시(ハムアイコンを表示)</span>
+                                </div>
+
+                                {donationHamuEnabled && (
+                                    <div className="space-y-4 animate-fadeIn">
+                                        <div className="space-y-1.5">
+                                            <label className="text-[11px] font-bold text-neutral-500 uppercase">아이콘 타입(アイコンタイプ)</label>
+                                            <div className="flex gap-2">
+                                                <button 
+                                                    onClick={() => setDonationHamuType('cheeze')}
+                                                    className={`flex-1 py-2 px-3 rounded-lg text-xs font-bold transition-all border ${donationHamuType === 'cheeze' ? 'bg-indigo-500 border-indigo-500 text-white shadow-sm' : 'bg-white border-neutral-200 text-neutral-600 hover:bg-neutral-50'}`}
+                                                >
+                                                    치즈(チーズ)
+                                                </button>
+                                                <button 
+                                                    onClick={() => setDonationHamuType('heart')}
+                                                    className={`flex-1 py-2 px-3 rounded-lg text-xs font-bold transition-all border ${donationHamuType === 'heart' ? 'bg-indigo-500 border-indigo-500 text-white shadow-sm' : 'bg-white border-neutral-200 text-neutral-600 hover:bg-neutral-50'}`}
+                                                >
+                                                    하트(ハート)
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <div className="space-y-1.5">
+                                            <label className="text-[11px] font-bold text-neutral-500 uppercase">하무 위치(ハムの位置)</label>
+                                            <div className="flex gap-2">
+                                                <button 
+                                                    onClick={() => setDonationHamuPosition('left')}
+                                                    className={`flex-1 py-2 px-3 rounded-lg text-xs font-bold transition-all border ${donationHamuPosition === 'left' ? 'bg-indigo-500 border-indigo-500 text-white shadow-sm' : 'bg-white border-neutral-200 text-neutral-600 hover:bg-neutral-50'}`}
+                                                >
+                                                    좌(左)
+                                                </button>
+                                                <button 
+                                                    onClick={() => setDonationHamuPosition('center')}
+                                                    className={`flex-1 py-2 px-3 rounded-lg text-xs font-bold transition-all border ${donationHamuPosition === 'center' ? 'bg-indigo-500 border-indigo-500 text-white shadow-sm' : 'bg-white border-neutral-200 text-neutral-600 hover:bg-neutral-50'}`}
+                                                >
+                                                    중앙(中央)
+                                                </button>
+                                                <button 
+                                                    onClick={() => setDonationHamuPosition('right')}
+                                                    className={`flex-1 py-2 px-3 rounded-lg text-xs font-bold transition-all border ${donationHamuPosition === 'right' ? 'bg-indigo-500 border-indigo-500 text-white shadow-sm' : 'bg-white border-neutral-200 text-neutral-600 hover:bg-neutral-50'}`}
+                                                >
+                                                    우(右)
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <div className="space-y-2">
+                                            <div className="flex justify-between items-end">
+                                                <label className="text-[11px] font-bold text-neutral-500 uppercase">하무 크기(ハムのサイズ)[default: 50px]</label>
+                                                <span className="text-xs font-mono font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded">{actualHamuSize}px</span>
+                                            </div>
+                                            <input type="range" min="20" max="150" value={actualHamuSize} onChange={(e) => setDonationHamuSize(Number(e.target.value))} className="w-full h-1.5 bg-neutral-200 rounded-lg appearance-none cursor-pointer accent-indigo-500" />
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     </div>
                 )}

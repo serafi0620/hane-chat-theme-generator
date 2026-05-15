@@ -12,41 +12,66 @@ export const generateCSS = (config) => {
         donationBorderBrightness,
         donationBorderOpacity,
         donationBorderThickness,
-        donationBorderDashGap
+        donationBorderDashGap,
+        donationHamuPosition = 'right', // 0, 50, or 100
+        donationHamuSize = 50,
+        donationHamuUrl = 'https://raw.githubusercontent.com/serafi0620/hane-chat-theme-generator/main/src/img/cheeze.png'
     } = config;
 
-    return `/* 컬러 팔레트 */
+    return `/******************************** 
+* 변수
+* - 채팅 스타일
+* - 도네이션 스타일
+********************************/
 :root {
+    /* 채팅 스타일 */
     --bubble-bg-color: ${bubbleBgColor};
     --bubble-line-color: ${bubbleLineColor};
     --bubble-txt-color: ${bubbleTxtColor};
-    --main-font: 'Gyeombalbal', 'M PLUS Rounded 1c', sans-serif;
     --staple-color: ${stapleColor};
     --staple-width: ${stapleWidth}px;
     --staple-height: ${stapleHeight}px;
+    --main-font: 'Gyeombalbal', 'M PLUS Rounded 1c', sans-serif; /* 미사용 속성 */
+
+    /* 도네이션 스타일 */
+    --donation-hamu-size: ${donationHamuSize}px;
+    --donation-hamu-url: url(${donationHamuUrl});
+    
 }
 
-/* 채팅 테마 */
+/******************************** 일반채팅 
+ * - 테마 속성
+ *     └ 테두리 라인
+ *     └ 채팅 텍스트
+ *     └ 장식
+*********************************/
+/* 일반 채팅 스타일 */
 .chat_list div.chat {
-    position: relative;
+    position: relative; 
+    /* 사이즈 */
     margin: 20px 0px 20px 10px !important; 
     padding: 15px 20px 15px 30px !important;
-    background-color: var(--bubble-bg-color);
     max-width: 90%;
+    width: max-content;
     word-wrap: break-word;
-    width: max-content; 
+    /* 채팅 배경 */
+    background-color: var(--bubble-bg-color);
+    /* 실선 테두리 */
     border-radius: 18px; 
     border: 2px solid var(--bubble-line-color);
+    /* 그림자 */
     box-shadow: 0 0 0 3px var(--bubble-bg-color), 2px 4px 5px rgba(0, 0, 0, 0.08) !important;
+    
 }
 
+/* 텍스트 속성 */
 .chat_list .text {
     color: var(--bubble-txt-color) !important;
     text-shadow: none !important;
     letter-spacing: 0.5px;
 }
 
-/* 장식 세팅 */
+/* 장식 스타일 */
 .chat_list .chat_box.chat::before,
 .chat_list .chat_box.chat::after {
     content: '';
@@ -58,20 +83,52 @@ export const generateCSS = (config) => {
     border-radius: 1px;
     z-index: 2;
 }
-
+/* 장식 상 */
 .chat_list .chat_box.chat::before {
     top: calc(50% - var(--staple-height) - var(--staple-height) / 2);
 }
+/* 장식 하 */
 .chat_list .chat_box.chat::after {
     top: calc(50% - var(--staple-height) - var(--staple-height) / 2 + var(--staple-height) * 2);
 }
 
+/********************************
+ * 도네이션 스타일
+ *     └ 테두리
+ *     └ 하무 배경
+ *********************************/
+/* 도네이션 스타일 */
 .chat_list .chat_box:not(.chat) {
     ${removeDonationWidth ? 'max-width: 100% !important;\n    width: 100% !important;' : ''}
     margin: 20px 5px 20px 5px  !important;
     justify-self: ${alignDonationLeft ? 'left' : 'center'} !important;
+    
+    /* [수정] 가상 요소의 기준점 마련 및 본문 겹침 방지 패딩 추가 */
+    position: relative !important;
+    padding-top: var(--donation-hamu-size) !important;
 }
 
+/* 하무 배경 */
+.chat_list .chat_box:not(.chat)::before {
+    content: "";
+    position: absolute;
+    top: 0%;
+    ${donationHamuPosition === 'center' 
+        ? 'left: 50%; transform: translateX(-50%);' 
+        : (donationHamuPosition === 'left' ? 'left: 0%;' : 'right: 0%;')
+    }
+    z-index: 5;   
+  
+    /* size */
+    width: calc(var(--donation-hamu-size) * 3);
+    height: var(--donation-hamu-size);
+    background-image: var(--donation-hamu-url);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+/* 도네이션 테두리 */
 .chat_list .chat_box:not(.chat) .donation_box {
     width: 100% !important;
     max-width: 100% !important;
