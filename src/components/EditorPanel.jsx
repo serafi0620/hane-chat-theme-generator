@@ -267,41 +267,51 @@ const EditorPanel = ({
                                             </div>
 
                                             {useTierSpecificIcons ? (
-                                                <div className="space-y-2 animate-fadeIn">
+                                                <div className="space-y-3 animate-fadeIn">
                                                     {[1000, 10000, 100000, 1000000].map((tier) => (
-                                                        <div key={tier} className="flex items-center justify-between gap-3 p-2 bg-white rounded-lg border border-neutral-100 shadow-sm">
-                                                            <span className="text-[10px] font-bold text-neutral-500 w-16">{tier.toLocaleString()}원</span>
-                                                            <div className="flex gap-1 flex-1">
-                                                                <button 
-                                                                    onClick={() => setDonationTiers({...donationTiers, [tier]: 'cheeze'})}
-                                                                    className={`flex-1 py-1.5 px-2 rounded-md text-[10px] font-bold transition-all border ${donationTiers[tier] === 'cheeze' ? 'bg-indigo-500 border-indigo-500 text-white shadow-sm' : 'bg-neutral-50 border-neutral-200 text-neutral-500 hover:bg-neutral-100'}`}
-                                                                >
-                                                                    치즈
-                                                                </button>
-                                                                <button 
-                                                                    onClick={() => setDonationTiers({...donationTiers, [tier]: 'heart'})}
-                                                                    className={`flex-1 py-1.5 px-2 rounded-md text-[10px] font-bold transition-all border ${donationTiers[tier] === 'heart' ? 'bg-indigo-500 border-indigo-500 text-white shadow-sm' : 'bg-neutral-50 border-neutral-200 text-neutral-500 hover:bg-neutral-100'}`}
-                                                                >
-                                                                    하트
-                                                                </button>
+                                                        <div key={tier} className="space-y-1.5 p-3 bg-white rounded-xl border border-neutral-100 shadow-sm">
+                                                            <span className="text-[11px] font-bold text-neutral-500">{tier.toLocaleString()}원 설정</span>
+                                                            <div className="grid grid-cols-2 gap-1.5">
+                                                                {[
+                                                                    { key: 'cheeze', label: '치즈' },
+                                                                    { key: 'heart', label: '하트' },
+                                                                    { key: 'cheeze-orange', label: '치즈 오랜지' },
+                                                                    { key: 'cheeze-pink', label: '치즈 핑크' },
+                                                                    { key: 'cheeze-rainbow', label: '치즈 무지개' },
+                                                                    { key: 'mandu', label: '치즈 만두' },
+                                                                    { key: 'ddalgi', label: '치즈 딸기' }
+                                                                ].map((opt) => (
+                                                                    <button 
+                                                                        key={opt.key}
+                                                                        onClick={() => setDonationTiers({...donationTiers, [tier]: opt.key})}
+                                                                        className={`py-1.5 px-2 rounded-md text-[10px] font-bold transition-all border ${donationTiers[tier] === opt.key ? 'bg-indigo-500 border-indigo-500 text-white shadow-sm' : 'bg-neutral-50 border-neutral-200 text-neutral-500 hover:bg-neutral-100'}`}
+                                                                    >
+                                                                        {opt.label}
+                                                                    </button>
+                                                                ))}
                                                             </div>
                                                         </div>
                                                     ))}
                                                 </div>
                                             ) : (
-                                                <div className="flex gap-2 p-2 bg-neutral-50 rounded-xl border border-neutral-100 animate-fadeIn">
-                                                    <button 
-                                                        onClick={() => setUnifiedIconType('cheeze')}
-                                                        className={`flex-1 py-2 px-3 rounded-lg text-xs font-bold transition-all border ${unifiedIconType === 'cheeze' ? 'bg-indigo-500 border-indigo-500 text-white shadow-sm' : 'bg-white border-neutral-200 text-neutral-600 hover:bg-neutral-50'}`}
-                                                    >
-                                                        치즈(チーズ)
-                                                    </button>
-                                                    <button 
-                                                        onClick={() => setUnifiedIconType('heart')}
-                                                        className={`flex-1 py-2 px-3 rounded-lg text-xs font-bold transition-all border ${unifiedIconType === 'heart' ? 'bg-indigo-500 border-indigo-500 text-white shadow-sm' : 'bg-white border-neutral-200 text-neutral-600 hover:bg-neutral-50'}`}
-                                                    >
-                                                        하트(ハート)
-                                                    </button>
+                                                <div className="grid grid-cols-2 gap-2 p-2 bg-neutral-50 rounded-xl border border-neutral-100 animate-fadeIn">
+                                                    {[
+                                                        { key: 'cheeze', label: '치즈' },
+                                                        { key: 'heart', label: '하트' },
+                                                        { key: 'cheeze-orange', label: '치즈 오랜지' },
+                                                        { key: 'cheeze-pink', label: '치즈 핑크' },
+                                                        { key: 'cheeze-rainbow', label: '치즈 무지개' },
+                                                        { key: 'mandu', label: '치즈 만두' },
+                                                        { key: 'ddalgi', label: '치즈 딸기' }
+                                                    ].map((opt) => (
+                                                        <button 
+                                                            key={opt.key}
+                                                            onClick={() => setUnifiedIconType(opt.key)}
+                                                            className={`py-2 px-3 rounded-lg text-xs font-bold transition-all border ${unifiedIconType === opt.key ? 'bg-indigo-500 border-indigo-500 text-white shadow-sm' : 'bg-white border-neutral-200 text-neutral-600 hover:bg-neutral-50'}`}
+                                                        >
+                                                            {opt.label}
+                                                        </button>
+                                                    ))}
                                                 </div>
                                             )}
                                         </div>

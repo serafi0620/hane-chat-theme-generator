@@ -149,7 +149,12 @@ function App() {
 
     const hamuUrls = {
         cheeze: 'https://raw.githubusercontent.com/serafi0620/hane-chat-theme-generator/main/src/img/cheeze.png',
-        heart: 'https://raw.githubusercontent.com/serafi0620/hane-chat-theme-generator/main/src/img/heart.png'
+        heart: 'https://raw.githubusercontent.com/serafi0620/hane-chat-theme-generator/main/src/img/heart.png',
+        'cheeze-orange': 'https://raw.githubusercontent.com/serafi0620/hane-chat-theme-generator/main/src/img/cheeze-orange.png',
+        'cheeze-pink': 'https://raw.githubusercontent.com/serafi0620/hane-chat-theme-generator/main/src/img/cheeze-pink.png',
+        'cheeze-rainbow': 'https://raw.githubusercontent.com/serafi0620/hane-chat-theme-generator/main/src/img/cheeze-rainbow.png',
+        mandu: 'https://raw.githubusercontent.com/serafi0620/hane-chat-theme-generator/main/src/img/mandu.png',
+        ddalgi: 'https://raw.githubusercontent.com/serafi0620/hane-chat-theme-generator/main/src/img/ddalgi.png'
     };
 
     const config = {
