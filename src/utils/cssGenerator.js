@@ -116,7 +116,7 @@ ${donationHamuEnabled ? `
 .chat_list .chat_box:not(.chat)::before {
     content: "";
     position: absolute;
-    top: 0%;
+    top: calc(0% + 2px);
     ${donationHamuPosition === 'center' 
         ? 'left: 50%; transform: translateX(-50%);' 
         : (donationHamuPosition === 'left' ? 'left: 0%;' : 'right: 0%;')
